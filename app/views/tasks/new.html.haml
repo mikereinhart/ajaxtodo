@@ -1,0 +1,67 @@
+= form_for @task do |f|
+  = f.label :name
+  = f.text_field :name
+  = f.label :desc
+  = f.text_field :desc
+  = f.label :duedate
+  = f.text_field :duedate
+  = f.label :priority_id
+  / = f.select :priority_id, Priority.all.map{|priority| [priority.name, priority.id]}, :include_blank => true, :prompt => "-- Choose Priority --"
+  = f.collection_select :priority_id, @priorities, :id, :name, include_blank: true, prompt: '-- Choose Priority --'
+  = f.submit id: 'submit', class: 'button success small'
+  = f.submit id: 'edit-submit', class: 'button small hidden', value: 'Update Task'
+
+%table#tasks
+  %thead
+    %tr
+      %th
+        Move Task
+      %th
+        = link_to 'Name', '#', id: 'name-sort'
+      %th
+        = link_to 'Desc', '#', id: 'desc-sort'
+      %th
+        = link_to 'Duedate', '#', id: 'duedate-sort'
+      %th
+        = link_to 'Options', '#', id: 'options-heading'
+  %tbody
+    - @tasks.each do |task|
+      %tr{:'data-id' => task.id, style: "background-color: #{task.priority.color}"}
+        %td.movement  
+          %i
+            =link_to '', '#', class: 'up-arrow general foundicon-up-arrow'
+          %i
+            =link_to '', '#"', class: 'down-arrow general foundicon-down-arrow'
+        %td.name
+          = task.name
+        %td.desc
+          = task.desc
+        %td.duedate
+          = task.duedate
+        %td.urgency-index{style: 'display: none;'}
+          = task.priority.urgency_index
+        %td.priority_id{style: 'display: none;'}
+          = task.priority.id
+        %td.options
+          / = link_to 'View', '#', {class: 'small button'}
+          / = link_to 'Delete', '#', {class: 'small button delete-button', method: 'delete'}
+          %a{href: '#', :'data-id' => task.id, class: 'small button delete-button'} Delete
+          = link_to 'Edit', '#', class: 'button edit-button small info', :'data-id' => task.id
+
+= javascript_include_tag 'tasks'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
